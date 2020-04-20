@@ -1,8 +1,8 @@
 FROM node:10-alpine
 
 RUN apk --no-cache add \
-    git=2.24.2-r0 \
-    bash=5.0.11-r1
+    git~=2.24 \
+    bash~=5.0
 
 WORKDIR /work
 
