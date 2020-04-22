@@ -135,3 +135,24 @@ jobs:
     steps:
       - run: true
     runs-on: ubuntu-latest
+  publish:
+    name: Publish
+    needs:
+      - all-done
+    strategy:
+      matrix:
+        service:
+          - src/configurator
+    steps:
+      - name: Checkout
+        uses: actions/checkout@master
+        with:
+          fetch-depth: 1
+      - name: fetch
+        run: |
+          git fetch
+      - name: Publish
+        run: >
+          make -C ${{ matrix.service }} publish DOCKER_USER=${{ github.actor }}
+          DOCKER_TOKEN=${{ secrets.GITHUB_TOKEN }} ENVIRONMENT=dev
+    runs-on: ubuntu-latest

@@ -1,4 +1,8 @@
 REPO_PATH ?= ../../
+DOCKER_IMAGE = dogmatic69/actions/configurator
+
+include ../../targets/Makefile.docker
+include ../../targets/Makefile.git
 
 .PHONY: all
 all: build
@@ -13,14 +17,28 @@ test:
 
 .PHONY: build
 build:
-	docker build -t configurator .
+	docker build -t ${DOCKER_IMAGE} .
+
+.PHONY: publish
+publish: build
+	$(MAKE) auth-github
+
+	echo "GIT_HASH: [${GIT_HASH}]"
+	echo "GITHUB_HEAD_REF: [${GITHUB_HEAD_REF}]"
+	git log "origin/${GITHUB_HEAD_REF}" --pretty=format:"%H" ./ | head -1 | cut -c1-8
+
+	$(MAKE) docker-tag-github DOCKER_TAG=latest
+	$(MAKE) docker-push-github DOCKER_TAG=latest
+
+	$(MAKE) docker-tag-github DOCKER_TAG=$(GIT_HASH)
+	$(MAKE) docker-push-github DOCKER_TAG=$(GIT_HASH)
 
 .PHONY: run
 run:
 	docker run --rm -i \
 		-e ROOT_DIR=/repo \
 		-v $(realpath ${REPO_PATH}):/repo \
-		configurator /src/index.js $(TEMPLATE)
+		${DOCKER_IMAGE} /src/index.js $(TEMPLATE)
 
 .PHONY: run-all
 run-all: build

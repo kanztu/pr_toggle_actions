@@ -3,9 +3,14 @@ on:
   pull_request:
     branches: ['master']
 
-publish: false
 project: false
 terraform: false
+
+publish:
+  environment: dev
+  matrix:
+    service:
+      - src/configurator
 
 file:
   checks:

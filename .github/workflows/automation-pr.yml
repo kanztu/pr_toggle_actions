@@ -5,6 +5,7 @@ name: automation pr
       - feature/*
       - bugfix/*
       - release/*
+      - automation/*
 jobs:
   workflow-check:
     name: Workflow Check
