@@ -8,6 +8,4 @@ RUN yarn install
 
 COPY files/ /
 
-ENTRYPOINT [ "node" ]
-
-CMD ["/src/index.js"]
+ENTRYPOINT [ "yarn" ]

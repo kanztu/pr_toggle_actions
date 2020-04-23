@@ -15,6 +15,10 @@ clean:
 test:
 	echo "done"
 
+.PHONY: lint
+lint: build
+	docker run --rm -i ${DOCKER_IMAGE} run lint
+
 .PHONY: build
 build:
 	docker build -t ${DOCKER_IMAGE} .
@@ -38,7 +42,16 @@ run:
 	docker run --rm -i \
 		-e ROOT_DIR=/repo \
 		-v $(realpath ${REPO_PATH}):/repo \
-		${DOCKER_IMAGE} /src/index.js $(TEMPLATE)
+		${DOCKER_IMAGE} run generate $(TEMPLATE)
+
+.PHONY: debug
+debug:
+	docker run --rm -it \
+		-e ROOT_DIR=/repo \
+		-v $(realpath ../../):/repo \
+		-v $(realpath ./files/src):/src \
+		--entrypoint sh \
+		${DOCKER_IMAGE}
 
 .PHONY: run-all
 run-all: build

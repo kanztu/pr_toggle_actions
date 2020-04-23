@@ -2,15 +2,20 @@ on:
   push:
     branches:	['master']
 
-publish-gcp: false
-project: false
-terraform: false
+docker-lint: true
 
 publish:
   environment: stage
+  target: github
   matrix:
     service:
       - src/configurator
+
+project:
+  matrix:
+    image:
+      - src/configurator
+      - src/documentation
 
 file:
   checks:

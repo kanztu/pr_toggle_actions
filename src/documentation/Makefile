@@ -1,4 +1,4 @@
-DOCKER_IMAGE = app
+DOCKER_IMAGE = dogmatic69/actions/documentation
 DOCKER_PATH = ./
 GITHUB_REPOSITORY ?= foo/bar
 GITHUB_WORKSPACE ?= /github/workspace
@@ -8,15 +8,18 @@ all: clean build test run
 
 .PHONY: clean
 clean:
-	unlink $(GITHUB_WORKSPACE) || true
+	echo "clean"
 
 .PHONY: test
 test:
 	echo "done"
 
+.PHONY: lint
+lint: build
+	docker run --rm -i ${DOCKER_IMAGE} run lint
+
 .PHONY: build
-build: clean
-	ls $(GITHUB_WORKSPACE) || ln -s $(realpath ../../) $(GITHUB_WORKSPACE)
+build:
 	docker build -t $(DOCKER_IMAGE) .
 
 .PHONY: run
@@ -33,4 +36,6 @@ debug: build
 		--env GITHUB_REPOSITORY=$(GITHUB_REPOSITORY) \
 		--env INPUT_PATH=$(GITHUB_WORKSPACE) \
 		--env INPUT_COMMAND=git-$(COMMAND) \
-		-v $(realpath ../../):$(GITHUB_WORKSPACE) ${DOCKER_IMAGE}
+		-v $(realpath ../../):$(GITHUB_WORKSPACE) \
+		-v $(realpath ./files/src):/src \
+		${DOCKER_IMAGE}

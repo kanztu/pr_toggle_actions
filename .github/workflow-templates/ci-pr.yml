@@ -3,14 +3,20 @@ on:
   pull_request:
     branches: ['master']
 
-project: false
-terraform: false
+docker-lint: true
 
 publish:
   environment: dev
+  target: github
   matrix:
     service:
       - src/configurator
+
+project:
+  matrix:
+    image:
+      - src/configurator
+      - src/documentation
 
 file:
   checks:
