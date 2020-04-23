@@ -1,5 +1,7 @@
 const libs = require('./libs');
 
+const getConfig = (config, key) => config && config[key] ? config[key] : false;
+
 module.exports = (config) => ({
   name: config.name,
   on: config.on,
@@ -118,32 +120,56 @@ module.exports = (config) => ({
       'project-done': config.project && config.project,
     }),
 
-    ...libs.job({
-      include: config.publish !== false,
-      name: 'Publish',
-      needs: ['all-done'],
-      strategy: {
-        matrix: config.publish ? config.publish.matrix : null,
-      },
-      steps: [
-        libs.checkout(),
-        {
-          name: 'GCloud Setup',
-          uses: 'GoogleCloudPlatform/github-actions/setup-gcloud@master',
-          with: {
-            version: config.publish ? config.publish['gcloud-version'] : null,
-            service_account_email: '${{ secrets.GCP_SA_EMAIL }}',
-            service_account_key: '${{ secrets.GCP_SA_KEY }}',
-            export_default_credentials: true
-          },
+    ...((config) => {
+      if (!config) {
+        return {}
+      }
+
+      return libs.job({
+        name: 'Publish GCP',
+        needs: ['all-done'],
+        strategy: {
+          matrix: config.matrix,
         },
-        libs.run('Docker Login', [
-          'echo "${{ secrets.GCP_SA_KEY }}" | base64 --decode |',
-          'docker login -u _json_key --password-stdin https://eu.gcr.io'
-        ].join("\\\n")),
-        libs.run('Publish', `make -C \${{ matrix.service }} publish ENVIRONMENT=${config.publish ? config.publish.environment : null}`),
-      ],
-    }),
+        steps: [
+          libs.checkout(),
+          {
+            name: 'GCloud Setup',
+            uses: 'GoogleCloudPlatform/github-actions/setup-gcloud@master',
+            with: {
+              version: config ? config['gcloud-version'] : null,
+              service_account_email: '${{ secrets.GCP_SA_EMAIL }}',
+              service_account_key: '${{ secrets.GCP_SA_KEY }}',
+              export_default_credentials: true
+            },
+          },
+          libs.run('Docker Login', [
+            'echo "${{ secrets.GCP_SA_KEY }}" | base64 --decode |',
+            'docker login -u _json_key --password-stdin https://eu.gcr.io'
+          ].join("\\\n")),
+          libs.run('Publish', `make -C \${{ matrix.service }} publish ENVIRONMENT=${config.environment || 'dev'}`),
+        ],
+      })
+    })(getConfig(config, 'publish-gcp')),
+
+    ...((config) => {
+      if (!config) {
+        return {}
+      }
+
+      return libs.job({
+        name: 'Publish',
+        needs: ['all-done'],
+        strategy: {
+          matrix: config.matrix,
+        },
+        steps: [
+          libs.checkout(),
+          libs.run('fetch', 'git fetch'),
+          libs.run('Publish', `make -C \${{ matrix.service }} publish DOCKER_USER=\${{ github.actor }} DOCKER_TOKEN=\${{ secrets.GITHUB_TOKEN }} ENVIRONMENT=${config.environment || 'dev'}`),
+        ],
+      })
+    })(getConfig(config, 'publish')),
 
     ...(config.raw || {})
   },

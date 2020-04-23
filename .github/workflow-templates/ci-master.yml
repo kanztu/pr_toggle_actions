@@ -2,9 +2,15 @@ on:
   push:
     branches:	['master']
 
-publish: false
+publish-gcp: false
 project: false
 terraform: false
+
+publish:
+  environment: stage
+  matrix:
+    service:
+      - src/configurator
 
 file:
   checks:
