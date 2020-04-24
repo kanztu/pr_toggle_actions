@@ -40,18 +40,16 @@ jobs:
           GITHUB_TOKEN: '${{ secrets.GITHUB_TOKEN }}'
           BRANCH_PREFIX: feature/
           PULL_REQUEST_BRANCH: master
-          PULL_REQUEST_TITLE: "WIP: Merge ${{ steps.pr-id.outputs.id }} into master \U0001F648"
-          PULL_REQUEST_BODY: >
+          PULL_REQUEST_TITLE: "WIP:\nMerge ${{ steps.pr-id.outputs.id }} into master \U0001F648\n"
+          PULL_REQUEST_BODY: |
             An automated feature PR has been created.
-
             Once you are ready, update the title of this PR and the body to
-            clearly
-
-            describe what it is you are changing.
+            clearly describe what it is you are changing.
       - name: Hack to triger CI
         uses: dogmatic69/actions/automations/pr-toggle@master
         env:
-          PULL_REQUEST_NUMBER: '${{ steps.pr-number.outputs.pull_request_number }}'
+          PULL_REQUEST_NUMBER: |
+            ${{ steps.pr-number.outputs.pull_request_number }}
           GITHUB_TOKEN: '${{ secrets.OWNER_TOKEN }}'
   auto-pull-request-bug:
     name: Auto PR BugFix
@@ -67,11 +65,8 @@ jobs:
           GITHUB_TOKEN: '${{ secrets.OWNER_TOKEN }}'
           BRANCH_PREFIX: bugfix/
           PULL_REQUEST_BRANCH: master
-          PULL_REQUEST_TITLE: "Merge ${{ steps.pr-id.outputs.id }} into master \U0001F648"
-          PULL_REQUEST_BODY: >
+          PULL_REQUEST_TITLE: "WIP:\nMerge ${{ steps.pr-id.outputs.id }} into master \U0001F648\n"
+          PULL_REQUEST_BODY: |
             An automated bugfix PR has been created.
-
             Once you are ready, update the title of this PR and the body to
-            clearly
-
-            describe what it is you are changing.
+            clearly describe what it is you are changing.

@@ -1,22 +1,19 @@
-on:
+'on':
   push:
-    branches:	['master']
+    branches: ['master']
 
 docker-lint: true
-
 publish:
   environment: stage
   target: github
   matrix:
     service:
       - src/configurator
-
 project:
   matrix:
     image:
       - src/configurator
       - src/documentation
-
 file:
   checks:
     cr: []
@@ -28,14 +25,12 @@ file:
     trailing-space: []
   steps:
     Checkmake: dogmatic69/actions/file/lint/checkmake@master
-
 git:
   checks:
     - conflicts
     - ignored
   steps:
     'Git Leaks': dogmatic69/actions/git/audit/gitleaks@master
-
 trivy:
   matrix:
     image:
@@ -48,7 +43,6 @@ trivy:
       - git/lint/awesome-ci
       - src/documentation
       - src/configurator
-
 raw:
   update-docs:
     name: Update Documentation
@@ -67,7 +61,8 @@ raw:
           git config --local user.email "actions@dogmatic69.com"
           git config --local user.name "Action Bot"
           git add docs || true
-          git commit -m "chore: update documentation (auto-generated)" -a || true
+          git commit -m "chore: update documentation (auto-generated)" -a \
+          || true
       - name: Push changes
         uses: ad-m/github-push-action@master
         with:

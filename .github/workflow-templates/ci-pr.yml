@@ -1,5 +1,4 @@
-
-on:
+'on':
   pull_request:
     branches: ['master']
 
@@ -29,6 +28,10 @@ file:
     trailing-space: []
   steps:
     Checkmake: dogmatic69/actions/file/lint/checkmake@master
+    yaml-lint:
+      uses: ibiqlik/action-yamllint@master
+      with:
+        config_file: .yamllint.yml
 
 git:
   checks:

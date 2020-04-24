@@ -1,0 +1,8 @@
+extends: default
+
+ignore: |
+  **/.github/workflows
+  **/node_modules
+
+rules:
+  document-start: disable
