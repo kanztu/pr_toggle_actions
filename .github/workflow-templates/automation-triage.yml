@@ -1,15 +1,6 @@
 on:
 - pull_request
 
-git: false
-trivy: false
-file: false
-docker: false
-project: false
-terraform: false
-publish: false
-publish-gcp: false
-
 raw:
   triage:
     runs-on: ubuntu-latest

@@ -1,10 +1,27 @@
 {
+  "name": "@dogmatic69/actions-configurator",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "description": "Generate opinionated github action workflows",
+  "repository": "github.com/dogmatic69/actions",
+  "author": "Carl Sutton (dogmatic69)",
+  "scripts": {
+    "generate": "node /src/index.js",
+    "lint": "eslint /src",
+    "lint:fix": "eslint /src --fix"
+  },
   "dependencies": {
     "js-yaml": "^3.13.1",
     "slugify": "^1.4.0"
   },
-  "name": "src",
-  "version": "1.0.0",
-  "main": "index.js",
-  "license": "MIT"
+  "devDependencies": {
+    "eslint": "6.8.0",
+    "eslint-config-airbnb": "18.1.0",
+    "eslint-plugin-import": "^2.20.1",
+    "eslint-plugin-jsx-a11y": "^6.2.3",
+    "eslint-plugin-react": "^7.19.0",
+    "eslint-plugin-react-hooks": "2.5.0",
+    "npx": "^10.2.2"
+  }
 }

@@ -1,161 +1,192 @@
+/* eslint-disable no-template-curly-in-string */
+
 const libs = require('./libs');
 
-const getConfig = (config, key) => config && config[key] ? config[key] : false;
+const getConfig = (config, key) => (config && config[key] ? config[key] : null);
 
-module.exports = (config) => ({
-  name: config.name,
-  on: config.on,
+module.exports = (configuration) => ({
+  name: configuration.name,
+  on: configuration.on,
   jobs: {
 
-    ...libs.job({
-      include: config.workflow !== false,
-      name: 'Workflow Check',
-      steps: [
-        libs.checkout(),
-        libs.run('Configurator', [
-          'make -C ${GITHUB_WORKSPACE}/src/configurator run-all',
-          'git status',
-          'git diff-index --quiet HEAD -- || echo "Changes found in workflow, please update"',
-          'git diff-index --quiet HEAD --',
-        ]),
-      ],
-    }),
-
-    ...libs.job({
-      include: config.file !== false,
-      name: 'File Lint',
-      steps: [
-        libs.checkout(),
-        ...libs.fileChecks(config.file.checks),
-        ...libs.additionalSteps(config.file.steps),
-      ],
-    }),
-
-    ...libs.job({
-      include: config.git !== false,
-      name: 'Git Lint',
-      steps: [
-        libs.checkout(0),
-        ...libs.gitChecks(config.git.checks),
-        ...libs.additionalSteps(config.git.steps),
-      ],
-    }),
-
-    ...libs.job({
-      include: config.trivy !== false,
-      name: 'Audit Trivy',
-      strategy: {
-        matrix: config.trivy ? config.trivy.matrix : null,
-      },
-      steps: [
-        libs.checkout(),
-        libs.run('Build', [
-          'docker build -t ${{ matrix.image }} ./${{ matrix.image }}'
-        ]),
-        {
-          name: 'Trivy Scan ${{ matrix.image }}',
-          uses: 'dogmatic69/actions/docker/audit/trivy@master',
-          with: {
-            token: '${{ secrets.GITHUB_TOKEN }}',
-            image: '${{ matrix.image }}',
-            path: './${{ matrix.image }}',
-          },
-        },
-      ]
-    }),
-
-    ...libs.job({
-      include: config.docker !== false,
-      name: 'Dockerfile lint',
-      steps: [
-        libs.checkout(),
-        {
-          name: 'Hadolint',
-          uses: 'dogmatic69/actions/docker/lint/hadolint@master',
-        },
-      ],
-    }),
-
-    ...libs.collector('Docker Done', {
-      'audit-trivy': config.trivy !== false,
-      'dockerfile-lint': config.docker !== false,
-    }),
-
-    ...libs.job({
-      include: config.project !== false,
-      name: 'Project Checks',
-      strategy: {
-        matrix: config.project ? config.project.matrix: null,
-      },
-      steps: [
-        libs.checkout(),
-        libs.run('lint', 'make -C ${{ matrix.image }} lint'),
-        libs.run('test', 'make -C ${{ matrix.image }} test'),
-      ],
-    }),
-
-    ...libs.job({
-      include: config.terraform !== false,
-      name: 'Project Checks TF',
-      strategy: {
-        matrix: config.terraform ? config.terraform.matrix : null,
-      },
-      steps: [
-        libs.checkout(),
-        ...['format', 'tflint', 'validate'].map(command => {
-          return libs.run(`TF ${command}`, `make -C terraform ${command} TERRAFORM_MODULE_PATH=$(realpath ./\${{ matrix.module }}/)`)
-        }),
-      ],
-    }),
-
     ...libs.collector('Project Done', {
-      'project-checks': config.project !== false,
-      'project-checks-tf': config.terraform !== false,
+      'project-checks': !!configuration.project,
+      'project-checks-tf': !!configuration.terraform,
     }),
 
     ...libs.collector('All Done', {
-      'file-lint': !!config.file,
-      'git-lint': !!config.git,
-      'docker-done': config.trivy && config.docker,
-      'project-done': config.project && config.project,
+      'file-lint': !!configuration.file,
+      'git-lint': !!configuration.git,
+      'docker-done': configuration.trivy && configuration.docker,
+      'project-done': configuration.project && configuration.project,
+    }),
+
+    ...libs.collector('Docker Done', {
+      'audit-trivy': !!getConfig(configuration, 'trivy'),
+      'dockerfile-lint': !!getConfig(configuration, 'docker-lint'),
     }),
 
     ...((config) => {
+      if (config === false) {
+        return {};
+      }
+      return libs.job({
+        name: 'Workflow Check',
+        steps: [
+          libs.checkout(),
+          libs.run('Configurator', [
+            'make -C ${GITHUB_WORKSPACE}/src/configurator run-all',
+            'git status',
+            'git diff-index --quiet HEAD -- || echo "Changes found in workflow, please update"',
+            'git diff-index --quiet HEAD --',
+          ]),
+        ],
+      });
+    })(getConfig(configuration, 'workflow')),
+
+    ...((config) => {
       if (!config) {
-        return {}
+        return {};
+      }
+      return libs.job({
+        name: 'File Lint',
+        steps: [
+          libs.checkout(),
+          ...libs.fileChecks(config.checks),
+          ...libs.additionalSteps(config.steps),
+        ],
+      });
+    })(getConfig(configuration, 'file')),
+
+    ...((config) => {
+      if (!config) {
+        return {};
       }
 
       return libs.job({
-        name: 'Publish GCP',
-        needs: ['all-done'],
+        name: 'Git Lint',
+        steps: [
+          libs.checkout(0),
+          ...(config.checks || []).map((check) => ({
+            name: `Git ${check}`,
+            uses: 'dogmatic69/actions/git/lint/awesome-ci@master',
+            with: {
+              command: `git-${check}`,
+            },
+          })),
+          ...libs.additionalSteps(config.steps),
+        ],
+      });
+    })(getConfig(configuration, 'git')),
+
+    ...((config) => {
+      if (!config) {
+        return {};
+      }
+      return libs.job({
+        name: 'Audit Trivy',
         strategy: {
           matrix: config.matrix,
         },
         steps: [
           libs.checkout(),
+          libs.run('Build', [
+            'docker build -t ${{ matrix.image }} ./${{ matrix.image }}',
+          ]),
           {
-            name: 'GCloud Setup',
-            uses: 'GoogleCloudPlatform/github-actions/setup-gcloud@master',
+            name: 'Trivy Scan ${{ matrix.image }}',
+            uses: 'dogmatic69/actions/docker/audit/trivy@master',
             with: {
-              version: config ? config['gcloud-version'] : null,
-              service_account_email: '${{ secrets.GCP_SA_EMAIL }}',
-              service_account_key: '${{ secrets.GCP_SA_KEY }}',
-              export_default_credentials: true
+              token: '${{ secrets.GITHUB_TOKEN }}',
+              image: '${{ matrix.image }}',
+              path: './${{ matrix.image }}',
             },
           },
-          libs.run('Docker Login', [
-            'echo "${{ secrets.GCP_SA_KEY }}" | base64 --decode |',
-            'docker login -u _json_key --password-stdin https://eu.gcr.io'
-          ].join("\\\n")),
-          libs.run('Publish', `make -C \${{ matrix.service }} publish ENVIRONMENT=${config.environment || 'dev'}`),
         ],
-      })
-    })(getConfig(config, 'publish-gcp')),
+      });
+    })(getConfig(configuration, 'trivy')),
+
+    ...((config) => {
+      if (config !== true) {
+        return {};
+      }
+      return libs.job({
+        name: 'Dockerfile lint',
+        steps: [
+          libs.checkout(),
+          {
+            name: 'Hadolint',
+            uses: 'dogmatic69/actions/docker/lint/hadolint@master',
+          },
+        ],
+      });
+    })(getConfig(configuration, 'docker-lint')),
 
     ...((config) => {
       if (!config) {
-        return {}
+        return {};
       }
+      return libs.job({
+        name: 'Project Checks',
+        strategy: {
+          matrix: config.matrix,
+        },
+        steps: [
+          libs.checkout(),
+          libs.run('lint', 'make -C ${{ matrix.image }} lint'),
+          libs.run('test', 'make -C ${{ matrix.image }} test'),
+        ],
+      });
+    })(getConfig(configuration, 'project')),
+
+    ...((config) => {
+      if (!config) {
+        return {};
+      }
+
+      return libs.job({
+        name: 'Project Checks TF',
+        strategy: {
+          matrix: config.matrix,
+        },
+        steps: [
+          libs.checkout(),
+          ...['format', 'tflint', 'validate'].map((command) => libs.run(`TF ${command}`, `make -C terraform ${command} TERRAFORM_MODULE_PATH=$(realpath ./\${{ matrix.module }}/)`)),
+        ],
+      });
+    })(getConfig(configuration, 'terraform')),
+
+    ...((config) => {
+      if (!config) {
+        return {};
+      }
+
+      const target = config.target || 'github';
+      const steps = [
+        libs.checkout(),
+        libs.run('fetch', 'git fetch'),
+      ];
+
+      if (target === 'gcp') {
+        steps.push({
+          name: 'GCloud Setup',
+          uses: 'GoogleCloudPlatform/github-actions/setup-gcloud@master',
+          with: {
+            version: config ? config['gcloud-version'] : null,
+            service_account_email: '${{ secrets.GCP_SA_EMAIL }}',
+            service_account_key: '${{ secrets.GCP_SA_KEY }}',
+            export_default_credentials: true,
+          },
+        });
+        steps.push(libs.run('Docker Login', [
+          'echo "${{ secrets.GCP_SA_KEY }}" | base64 --decode |',
+          'docker login -u _json_key --password-stdin https://eu.gcr.io',
+        ].join('\\\n')));
+      }
+
+      steps.push(
+        libs.run('Publish', `make -C \${{ matrix.service }} publish DOCKER_USER=\${{ github.actor }} DOCKER_TOKEN=\${{ secrets.GITHUB_TOKEN }} ENVIRONMENT=${config.environment || 'dev'}`),
+      );
 
       return libs.job({
         name: 'Publish',
@@ -163,14 +194,10 @@ module.exports = (config) => ({
         strategy: {
           matrix: config.matrix,
         },
-        steps: [
-          libs.checkout(),
-          libs.run('fetch', 'git fetch'),
-          libs.run('Publish', `make -C \${{ matrix.service }} publish DOCKER_USER=\${{ github.actor }} DOCKER_TOKEN=\${{ secrets.GITHUB_TOKEN }} ENVIRONMENT=${config.environment || 'dev'}`),
-        ],
-      })
-    })(getConfig(config, 'publish')),
+        steps,
+      });
+    })(getConfig(configuration, 'publish')),
 
-    ...(config.raw || {})
+    ...(configuration.raw || {}),
   },
 });

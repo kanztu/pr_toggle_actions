@@ -1,5 +1,5 @@
 {
-  "name": "documentation",
+  "name": "@dogmatic69/actions-documentation",
   "version": "1.0.0",
   "main": "index.js",
   "license": "MIT",
@@ -7,12 +7,21 @@
   "repository": "github.com/dogmatic69/actions",
   "author": "Carl Sutton (dogmatic69)",
   "scripts": {
-    "build": "node index.js",
-    "test": "echo 'test'"
+    "build": "node /src/index.js",
+    "lint": "eslint /src",
+    "lint:fix": "eslint /src --fix"
   },
   "dependencies": {
     "find": "^0.3.0",
     "js-yaml": "^3.13.1",
     "slugify": "^1.3.6"
+  },
+  "devDependencies": {
+    "eslint": "6.8.0",
+    "eslint-config-airbnb": "18.1.0",
+    "eslint-plugin-import": "^2.20.1",
+    "eslint-plugin-jsx-a11y": "^6.2.3",
+    "eslint-plugin-react": "^7.19.0",
+    "eslint-plugin-react-hooks": "2.5.0"
   }
 }

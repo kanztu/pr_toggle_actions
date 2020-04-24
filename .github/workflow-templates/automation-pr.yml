@@ -6,15 +6,6 @@ on:
     - "release/*"
     - "automation/*"
 
-git: false
-trivy: false
-file: false
-docker: false
-project: false
-terraform: false
-publish: false
-publish-gcp: false
-
 raw:
   auto-pull-request-feature:
     name: Auto PR Feature

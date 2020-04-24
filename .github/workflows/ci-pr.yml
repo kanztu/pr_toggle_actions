@@ -4,6 +4,30 @@ name: ci pr
     branches:
       - master
 jobs:
+  project-done:
+    name: Project Done
+    needs:
+      - project-checks
+    steps:
+      - run: true
+    runs-on: ubuntu-latest
+  all-done:
+    name: All Done
+    needs:
+      - file-lint
+      - git-lint
+      - project-done
+    steps:
+      - run: true
+    runs-on: ubuntu-latest
+  docker-done:
+    name: Docker Done
+    needs:
+      - audit-trivy
+      - dockerfile-lint
+    steps:
+      - run: true
+    runs-on: ubuntu-latest
   workflow-check:
     name: Workflow Check
     steps:
@@ -119,21 +143,24 @@ jobs:
       - name: Hadolint
         uses: dogmatic69/actions/docker/lint/hadolint@master
     runs-on: ubuntu-latest
-  docker-done:
-    name: Docker Done
-    needs:
-      - audit-trivy
-      - dockerfile-lint
+  project-checks:
+    name: Project Checks
+    strategy:
+      matrix:
+        image:
+          - src/configurator
+          - src/documentation
     steps:
-      - run: true
-    runs-on: ubuntu-latest
-  all-done:
-    name: All Done
-    needs:
-      - file-lint
-      - git-lint
-    steps:
-      - run: true
+      - name: Checkout
+        uses: actions/checkout@master
+        with:
+          fetch-depth: 1
+      - name: lint
+        run: |
+          make -C ${{ matrix.image }} lint
+      - name: test
+        run: |
+          make -C ${{ matrix.image }} test
     runs-on: ubuntu-latest
   publish:
     name: Publish
