@@ -17,16 +17,22 @@ inputs:
         - cr: Scan files and check if they contain CR (Carriage Return only).
         - crlf: Scan files and check if they contain CRLF (Windows Line Feeds).
         - empty: Scan files and check if they are empty (0 bytes).
-        - nullbyte-char: Scan files and check if they contain a null-byte character (\x00).
-        - trailing-newline: Scan files and check if they contain a trailing newline.
-        - trailing-single-newline: Scan files and check if they contain exactly one trailing newline.
-        - trailing-space: Scan files and check if they contain trailing whitespaces.
+        - nullbyte-char: Scan files and check if they contain a null-byte
+          character (\x00).
+        - trailing-newline: Scan files and check if they contain a trailing
+          newline.
+        - trailing-single-newline: Scan files and check if they contain
+          exactly one trailing newline.
+        - trailing-space: Scan files and check if they contain trailing
+          white spaces.
         - utf8: Scan files and check if they have a non UTF-8 encoding.
-        - utf8-bom: Scan files and check if they contain BOM (Byte Order Mark): <U+FEFF>.
+        - utf8-bom: Scan files and check if they contain BOM (Byte Order Mark):
+          <U+FEFF>.
     required: true
   path:
     description: |
-      The path to the repository that will be checked. Defaults to the location of `actions/checkout` default path.
+      The path to the repository that will be checked. Defaults to the
+        location of `actions/checkout` default path.
     required: false
     default: /github/workspace
   ignore:

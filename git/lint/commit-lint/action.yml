@@ -1,9 +1,13 @@
 name: Commit Lint
 description: |
-  `commitlint` checks if your commit messages meet the conventional commit format.
+  `commitlint` checks if your commit messages meet the conventional commit
+  format.
 
-  Adapted from [commit-lint](https://github.com/conventional-changelog/commitlint)
-  See also [commitlint-analizer](https://github.com/semantic-release/commit-analyzer) for more.
+  Adapted from [commit-lint], See also [commitlint-analizer] for more.
+
+  [commitlint-analizer]: https://github.com/semantic-release/commit-analyzer
+  [commit-lint]: https://github.com/conventional-changelog/commitlint
+
 inputs:
   path:
     description: |
@@ -40,7 +44,8 @@ inputs:
     default: false
   pattern_in_title:
     description: |
-      Allow or disallow having a ticket reference in the title, defaults to false.
+      Allow or disallow having a ticket reference in the title, defaults to
+        false.
     required: false
     default: false
 runs:

@@ -10,16 +10,19 @@ inputs:
 
       #### Available Commands
       - conflicts: Scan files and check if they contain git conflicts.
-      - ignored: Scan git directory and see if ignored files are still in git cache.
+      - ignored: Scan git directory and see if ignored files are still in git
+        cache.
     required: true
   path:
     description: |
-      The path to the repository that will be checked. Defaults to the location of `actions/checkout` default path.
+      The path to the repository that will be checked. Defaults to the location
+      of `actions/checkout` default path.
     required: false
     default: /github/workspace
   ignore:
     description: |
-      List of paths to be ignored, for example if you had README.md files explaining how to deal with conflicts it would need to be ignored.
+      List of paths to be ignored, for example if you had README.md files
+      explaining how to deal with conflicts it would need to be ignored.
     required: false
     default: .git
 runs:

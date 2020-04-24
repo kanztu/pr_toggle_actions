@@ -83,6 +83,10 @@ jobs:
           command: file-trailing-space
       - name: Checkmake
         uses: dogmatic69/actions/file/lint/checkmake@master
+      - uses: ibiqlik/action-yamllint@master
+        with:
+          config_file: .yamllint.yml
+        name: yaml-lint
     runs-on: ubuntu-latest
   git-lint:
     name: Git Lint
