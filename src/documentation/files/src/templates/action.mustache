@@ -1,0 +1,70 @@
+# {{name}} [{{runs.using}} action]
+
+{{{description}}}
+
+> The latest version available for this action is `{{version}}`. It was last
+updated on **{{updated}}**.
+
+{{#hasInputs}}
+## Inputs
+
+{{/hasInputs}}
+{{#inputs}}
+#### {{name}}
+
+{{{description}}}
+
+- required: {{required}}
+- default: {{{default}}}
+
+{{/inputs}}
+{{^inputs}}
+This action has no inputs.
+{{/inputs}}
+
+## Examples
+
+As a step in pre-existing job.
+
+  - uses: actions/checkout@master
+  - ... other steps
+  - uses: {{&repo}}@{{version}}
+    {{#hasRequired}}
+    with:
+    {{#required}}
+      {{name}}: foobar
+    {{/required}}
+    {{/hasRequired}}
+
+
+This simple job example has the bare minimum required to run.
+
+  {{sluggedName}}:
+    name: {{name}}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+      - uses: {{{repo}}}@{{version}}
+        {{#hasRequired}}
+        with:
+        {{#required}}
+          {{name}}: foobar
+        {{/required}}
+        {{/hasRequired}}
+
+{{#hasInputs}}
+This example has all possible inputs, with dummy data.
+
+  {{sluggedName}}:
+    name: {{name}}
+      runs-on: ubuntu-latest
+      steps:
+        - uses: actions/checkout@master
+        - uses: {{{repo}}}@{{version}}
+        {{#hasInputs}}
+        with:
+        {{#inputs}}
+          {{name}}: foobar
+        {{/inputs}}
+        {{/hasInputs}}
+{{/hasInputs}}

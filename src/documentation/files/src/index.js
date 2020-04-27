@@ -1,107 +1,120 @@
 const find = require('find');
 const yaml = require('js-yaml');
-const fs = require('fs');
+const fs = require('fs').promises;
+const Mustache = require('mustache');
 const slugify = require('slugify');
 
-((dir) => {
-  const input = (name, config) => [
-    `#### ${name}`,
-    '',
-    `${config.description}`,
-    '',
-    `- required: ${config.required ? 'True' : 'False'}`,
-    `- default: ${config.default || 'None'}`,
-    '',
-    '',
-  ].join('\n');
+const getFiles = (regex, dir) => new Promise((resolve) => find.file(regex, dir, resolve));
 
-  const example = (repo, data) => {
-    const required = Object.keys(data.inputs).map((key) => {
-      if (!data.inputs[key].required) {
-        return null;
-      }
-      return `            ${key}: foobar`;
-    }).join('\n');
+const writeFile = async (file, data) => {
+  const md = `<!-- NOTICE: Auto generated file! -->\n${data}`;
+  await fs.writeFile(`/work/docs/${file}`, md);
+};
 
-    return [
-      'This example has only required inputs, with dummy data',
-      '',
-      `    ${slugify(data.name, { lower: true })}:`,
-      `      name: ${data.name}`,
-      '      runs-on: ubuntu-latest',
-      '      steps:',
-      '        - uses: actions/checkout@master',
-      `        - uses: ${repo}@master`,
-      `          ${required ? 'with:' : null}`,
-      `${required}`,
-      '',
-      'This example has all possible inputs, with dummy data.',
-      '',
-      `    ${slugify(data.name, { lower: true })}:`,
-      `      name: ${data.name}`,
-      '      runs-on: ubuntu-latest',
-      '      steps:',
-      '        - uses: actions/checkout@master',
-      `        - uses: ${repo}@master`,
-      '          with:',
-      `${Object.keys(data.inputs).map((key) => `            ${key}: foobar`).join('\n')}`,
-    ].join('\n');
-  };
+const fileName = (file) => file
+  .replace('/work/', '')
+  .replace('/action', '')
+  .replace('.yml', '')
+  .replace('.yaml', '')
+  .replace(/\//gi, '-');
 
-  const parse = (repo, data) => [
-    `# ${data.name} [${data.runs.using} action]`,
-    '',
-    `${data.description}`,
-    '',
-    '## Inputs',
-    '',
-    `${Object.keys(data.inputs).map((key) => input(key, data.inputs[key])).join('')}`,
-    '',
-    '## Example',
-    '',
-    `${example(repo, data)}`,
-    '',
-  ].join('\n');
+const getBadges = async (dir) => {
+  const files = await getFiles(/work\/\.github\/workflows\//, dir);
+  const res = files.map(async (file) => {
+    const doc = yaml.safeLoad(await fs.readFile(file, 'utf8'));
+    return {
+      slug: encodeURIComponent(doc.name),
+      name: doc.name,
+    };
+  });
+  return Promise.all(res);
+};
 
-  const badges = (path, repo) => new Promise((resolve) => {
-    find.file(/\.github\/workflows/, path, (files) => {
-      const res = files.map((file) => {
-        const doc = yaml.safeLoad(fs.readFileSync(file, 'utf8'));
-        return [
-          `[![${doc.name}]`,
-          `(https://github.com/${repo}/workflows/${encodeURIComponent(doc.name)}/badge.svg)]`,
-          `(https://github.com/${repo})`,
-        ].join('');
-      });
-      return resolve(res.join('\n'));
-    });
+const getActionOverviews = async (dir) => {
+  const files = await getFiles(/action.ya?ml$/, dir);
+  const ret = files.map(async (file) => {
+    const doc = yaml.safeLoad(await fs.readFile(file, 'utf8'));
+    return {
+      name: doc.name,
+      url: `${fileName(file)}.md`,
+    };
+  });
+  return Promise.all(ret);
+};
+
+const getActions = async (dir) => {
+  const files = await getFiles(/action.ya?ml$/, dir);
+  const res = files.map(async (file) => {
+    const docFile = fileName(file);
+
+    const action = yaml.safeLoad(await fs.readFile(file, 'utf8'));
+
+    action.sluggedName = slugify(action.name, { lower: true });
+
+    action.inputs = Object.keys((action.inputs || {})).map((key) => ({
+      name: key,
+      ...action.inputs[key],
+    }));
+
+    action.default = [undefined, null].indexOf(action.default) !== -1 ? 'null' : action.default;
+    action.hasInputs = action.inputs.length > 0;
+    action.required = action.inputs.filter((input) => input.required);
+    action.hasRequired = action.required.length > 0;
+
+    return {
+      action,
+      file,
+      docFile: `${docFile}.md`,
+    };
   });
 
-  find.file(/action.ya?ml$/, dir, async (files) => {
-    const output = files.map((file) => {
-      const path = file
-        .replace('/work/', '')
-        .replace('/action', '')
-        .replace('.yml', '')
-        .replace('.yaml', '');
+  return Promise.all(res);
+};
 
-      const doc = yaml.safeLoad(fs.readFileSync(file, 'utf8'));
-      const filename = `${path.replace(/\//gi, '-')}.md`;
-
-      fs.writeFileSync(`/work/docs/${filename}`, parse(path, doc));
-
-      return `- [${doc.name}](./${filename})`;
-    });
-
-    const readme = `${dir}/docs/README.md`;
-    fs.writeFileSync(readme, `${[
-      '# GitHub Actions',
-      '',
-      'Below is a list of all the available GitHub actions.',
-      '',
-      await badges(dir, process.env.GITHUB_REPOSITORY),
-      '',
-      output.join('\n'),
-    ].join('\n')}\n`);
+const writeActionsDoc = async (data, repo) => {
+  const template = await fs.readFile('./templates/action.mustache');
+  const md = Mustache.render(template.toString(), {
+    ...data.action,
+    repo,
+    version: process.env.GIT_HASH,
+    updated: (new Date()).toDateString(),
   });
+  writeFile(data.docFile, md);
+};
+
+const writeActionsReadmeDoc = async (data, repo) => {
+  const template = await fs.readFile('./templates/docs.mustache');
+  const md = Mustache.render(template.toString(), {
+    ...data,
+    repo,
+    version: process.env.GIT_HASH,
+    updated: (new Date()).toDateString(),
+  });
+  writeFile('README.md', md);
+};
+
+const writeReadmeDoc = async (data, repo) => {
+  const template = await fs.readFile('./templates/readme.mustache');
+  const md = Mustache.render(template.toString(), {
+    ...data,
+    repo,
+    version: process.env.GIT_HASH,
+    updated: (new Date()).toDateString(),
+  });
+  writeFile('../README.md', md);
+};
+
+(async (dir) => {
+  const actions = await getActions(dir);
+  actions.map((action) => writeActionsDoc(action, process.env.GITHUB_REPOSITORY));
+
+  const badges = await getBadges(dir);
+  writeActionsReadmeDoc({
+    badges,
+    overviews: await getActionOverviews(dir),
+  }, process.env.GITHUB_REPOSITORY);
+
+  writeReadmeDoc({
+    badges,
+  }, process.env.GITHUB_REPOSITORY);
 })('/work');

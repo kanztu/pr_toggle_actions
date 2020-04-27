@@ -3,6 +3,8 @@ DOCKER_PATH = ./
 GITHUB_REPOSITORY ?= foo/bar
 GITHUB_WORKSPACE ?= /github/workspace
 
+include ../../targets/Makefile.git
+
 .PHONY: all
 all: clean build test run
 
@@ -27,7 +29,7 @@ run: build
 	docker run --rm \
 		--env GITHUB_REPOSITORY=$(GITHUB_REPOSITORY) \
 		--env INPUT_PATH=$(GITHUB_WORKSPACE) \
-		--env INPUT_COMMAND=git-$(COMMAND) \
+		--env GIT_HASH=$(GIT_HASH) \
 		-v $(GITHUB_WORKSPACE):/work ${DOCKER_IMAGE}
 
 .PHONY: debug
