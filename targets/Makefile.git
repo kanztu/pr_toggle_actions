@@ -1,5 +1,5 @@
-GITHUB_HEAD_REF ?= HEAD
-GIT_HASH := $(shell git log "origin/${GITHUB_HEAD_REF}" --pretty=format:"%H" ./ | head -1 | cut -c1-8)
+GITHUB_REF ?= HEAD
+GIT_HASH := $(shell git log "${GITHUB_REF}" --pretty=format:"%H" ./ | head -1 | cut -c1-8)
 
 .PHONY: all
 all: build
