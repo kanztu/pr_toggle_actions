@@ -1,3 +1,4 @@
+<!-- NOTICE: Auto generated file! -->
 # File Lint [docker action]
 
 Lint various files in many ways (CR / CRLF / trailing \n / etc)
@@ -7,6 +8,9 @@ this job multiple times with a different command.
 
 Adapted from [cytopia/awesome-ci](https://github.com/cytopia/awesome-ci).
 
+
+> The latest version available for this action is `82870b0d`. It was last
+updated on **Mon Apr 27 2020**.
 
 ## Inputs
 
@@ -19,58 +23,70 @@ The specific command to be run.
 - cr: Scan files and check if they contain CR (Carriage Return only).
 - crlf: Scan files and check if they contain CRLF (Windows Line Feeds).
 - empty: Scan files and check if they are empty (0 bytes).
-- nullbyte-char: Scan files and check if they contain a null-byte character (\x00).
-- trailing-newline: Scan files and check if they contain a trailing newline.
-- trailing-single-newline: Scan files and check if they contain exactly one trailing newline.
-- trailing-space: Scan files and check if they contain trailing whitespaces.
+- nullbyte-char: Scan files and check if they contain a null-byte
+  character (\x00).
+- trailing-newline: Scan files and check if they contain a trailing
+  newline.
+- trailing-single-newline: Scan files and check if they contain
+  exactly one trailing newline.
+- trailing-space: Scan files and check if they contain trailing
+  white spaces.
 - utf8: Scan files and check if they have a non UTF-8 encoding.
-- utf8-bom: Scan files and check if they contain BOM (Byte Order Mark): <U+FEFF>.
+- utf8-bom: Scan files and check if they contain BOM (Byte Order Mark):
+  <U+FEFF>.
 
 
-- required: True
-- default: None
+- required: true
+- default: null
 
 #### path
 
-The path to the repository that will be checked. Defaults to the location of `actions/checkout` default path.
+The path to the repository that will be checked. Defaults to the
+  location of `actions/checkout` default path.
 
 
-- required: False
+- required: false
 - default: /github/workspace
 
 #### ignore
 
 List of paths to be ignored
 
-- required: False
+- required: false
 - default: .git/,*.png,*.jpg,*.jpeg,*.ico,*.svg
 
 
+## Examples
 
-## Example
+As a step in pre-existing job.
 
-This example has only required inputs, with dummy data
-
-    file-lint:
-      name: File Lint
-      runs-on: ubuntu-latest
-      steps:
-        - uses: actions/checkout@master
-        - uses: file/lint/awesome-ci@master
-          with:
-            command: foobar
+  - uses: actions/checkout@master
+  - ... other steps
+  - uses: dogmatic69/actions@82870b0d
+    with:
+      command: foobar
 
 
+This simple job example has the bare minimum required to run.
+
+  file-lint:
+    name: File Lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+      - uses: dogmatic69/actions@82870b0d
+        with:
+          command: foobar
 
 This example has all possible inputs, with dummy data.
 
-    file-lint:
-      name: File Lint
+  file-lint:
+    name: File Lint
       runs-on: ubuntu-latest
       steps:
         - uses: actions/checkout@master
-        - uses: file/lint/awesome-ci@master
-          with:
-            command: foobar
-            path: foobar
-            ignore: foobar
+        - uses: dogmatic69/actions@82870b0d
+        with:
+          command: foobar
+          path: foobar
+          ignore: foobar

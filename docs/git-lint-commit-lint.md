@@ -1,10 +1,17 @@
+<!-- NOTICE: Auto generated file! -->
 # Commit Lint [docker action]
 
-`commitlint` checks if your commit messages meet the conventional commit format.
+`commitlint` checks if your commit messages meet the conventional commit
+format.
 
-Adapted from [commit-lint](https://github.com/conventional-changelog/commitlint)
-See also [commitlint-analizer](https://github.com/semantic-release/commit-analyzer) for more.
+Adapted from [commit-lint], See also [commitlint-analizer] for more.
 
+[commitlint-analizer]: https://github.com/semantic-release/commit-analyzer
+[commit-lint]: https://github.com/conventional-changelog/commitlint
+
+
+> The latest version available for this action is `82870b0d`. It was last
+updated on **Mon Apr 27 2020**.
 
 ## Inputs
 
@@ -14,7 +21,7 @@ The path to the repository that will be checked. Defaults to the location
 of `actions/checkout` default path.
 
 
-- required: False
+- required: false
 - default: /github/workspace
 
 #### title_min_length
@@ -22,7 +29,7 @@ of `actions/checkout` default path.
 Min length of a commit title
 
 
-- required: False
+- required: false
 - default: 10
 
 #### title_max_length
@@ -30,7 +37,7 @@ Min length of a commit title
 Max length of a commit title
 
 
-- required: False
+- required: false
 - default: 50
 
 #### body_max_line_length
@@ -38,7 +45,7 @@ Max length of a commit title
 Maximum length of a line in the commit body. Defaults to 80
 
 
-- required: False
+- required: false
 - default: 80
 
 #### pattern
@@ -47,8 +54,8 @@ A ticket reference that should be matched. Leave empty for no reference
 requirements.
 
 
-- required: False
-- default: None
+- required: false
+- default: 
 
 #### pattern_every_commit
 
@@ -56,51 +63,50 @@ Require the `pattern` to match every commit. Defaults to require one
 match per PR.
 
 
-- required: False
-- default: None
+- required: false
+- default: false
 
 #### pattern_in_title
 
-Allow or disallow having a ticket reference in the title, defaults to false.
+Allow or disallow having a ticket reference in the title, defaults to
+  false.
 
 
-- required: False
-- default: None
+- required: false
+- default: false
 
 
+## Examples
 
-## Example
+As a step in pre-existing job.
 
-This example has only required inputs, with dummy data
-
-    commit-lint:
-      name: Commit Lint
-      runs-on: ubuntu-latest
-      steps:
-        - uses: actions/checkout@master
-        - uses: git/lint/commit-lint@master
-          with:
+  - uses: actions/checkout@master
+  - ... other steps
+  - uses: dogmatic69/actions@82870b0d
 
 
+This simple job example has the bare minimum required to run.
 
-
-
-
-
+  commit-lint:
+    name: Commit Lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+      - uses: dogmatic69/actions@82870b0d
 
 This example has all possible inputs, with dummy data.
 
-    commit-lint:
-      name: Commit Lint
+  commit-lint:
+    name: Commit Lint
       runs-on: ubuntu-latest
       steps:
         - uses: actions/checkout@master
-        - uses: git/lint/commit-lint@master
-          with:
-            path: foobar
-            title_min_length: foobar
-            title_max_length: foobar
-            body_max_line_length: foobar
-            pattern: foobar
-            pattern_every_commit: foobar
-            pattern_in_title: foobar
+        - uses: dogmatic69/actions@82870b0d
+        with:
+          path: foobar
+          title_min_length: foobar
+          title_max_length: foobar
+          body_max_line_length: foobar
+          pattern: foobar
+          pattern_every_commit: foobar
+          pattern_in_title: foobar

@@ -1,9 +1,13 @@
+<!-- NOTICE: Auto generated file! -->
 # Git Lint [docker action]
 
 Lint the git repo for common errors
 
 Adapted from [cytopia/awesome-ci](https://github.com/cytopia/awesome-ci).
 
+
+> The latest version available for this action is `82870b0d`. It was last
+updated on **Mon Apr 27 2020**.
 
 ## Inputs
 
@@ -13,54 +17,63 @@ The specific command to be executed.
 
 #### Available Commands
 - conflicts: Scan files and check if they contain git conflicts.
-- ignored: Scan git directory and see if ignored files are still in git cache.
+- ignored: Scan git directory and see if ignored files are still in git
+  cache.
 
 
-- required: True
-- default: None
+- required: true
+- default: null
 
 #### path
 
-The path to the repository that will be checked. Defaults to the location of `actions/checkout` default path.
+The path to the repository that will be checked. Defaults to the location
+of `actions/checkout` default path.
 
 
-- required: False
+- required: false
 - default: /github/workspace
 
 #### ignore
 
-List of paths to be ignored, for example if you had README.md files explaining how to deal with conflicts it would need to be ignored.
+List of paths to be ignored, for example if you had README.md files
+explaining how to deal with conflicts it would need to be ignored.
 
 
-- required: False
+- required: false
 - default: .git
 
 
+## Examples
 
-## Example
+As a step in pre-existing job.
 
-This example has only required inputs, with dummy data
-
-    git-lint:
-      name: Git Lint
-      runs-on: ubuntu-latest
-      steps:
-        - uses: actions/checkout@master
-        - uses: git/lint/awesome-ci@master
-          with:
-            command: foobar
+  - uses: actions/checkout@master
+  - ... other steps
+  - uses: dogmatic69/actions@82870b0d
+    with:
+      command: foobar
 
 
+This simple job example has the bare minimum required to run.
+
+  git-lint:
+    name: Git Lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+      - uses: dogmatic69/actions@82870b0d
+        with:
+          command: foobar
 
 This example has all possible inputs, with dummy data.
 
-    git-lint:
-      name: Git Lint
+  git-lint:
+    name: Git Lint
       runs-on: ubuntu-latest
       steps:
         - uses: actions/checkout@master
-        - uses: git/lint/awesome-ci@master
-          with:
-            command: foobar
-            path: foobar
-            ignore: foobar
+        - uses: dogmatic69/actions@82870b0d
+        with:
+          command: foobar
+          path: foobar
+          ignore: foobar

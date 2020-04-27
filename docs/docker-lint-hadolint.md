@@ -1,15 +1,19 @@
+<!-- NOTICE: Auto generated file! -->
 # Dockerfile Linter [docker action]
 
 A smarter Dockerfile linter that helps you build [best practice][] Docker
-images. The linter is parsing the Dockerfile into an AST and performs rules on
-top of the AST. It is standing on the shoulders of [ShellCheck][] to lint
+images. The linter is parsing the Dockerfile into an AST and performs rules
+on top of the AST. It is standing on the shoulders of [ShellCheck][] to lint
 the Bash code inside `RUN` instructions.
 
 Adapted from [hadolint/hadolint](https://github.com/hadolint/hadolint)
 
-[best practice]: https://docs.docker.com/engine/userguide/eng-image/dockerfile_best-practices
+[best practice]: https://dockr.ly/3cMOnq4
 [ShellCheck]: https://github.com/koalaman/shellcheck
 
+
+> The latest version available for this action is `82870b0d`. It was last
+updated on **Mon Apr 27 2020**.
 
 ## Inputs
 
@@ -17,31 +21,35 @@ Adapted from [hadolint/hadolint](https://github.com/hadolint/hadolint)
 
 Path to search for Dockerfiles that iwll be scanned
 
-- required: False
+- required: false
 - default: /github/workspace
 
 
+## Examples
 
-## Example
+As a step in pre-existing job.
 
-This example has only required inputs, with dummy data
+  - uses: actions/checkout@master
+  - ... other steps
+  - uses: dogmatic69/actions@82870b0d
 
-    dockerfile-linter:
-      name: Dockerfile Linter
-      runs-on: ubuntu-latest
-      steps:
-        - uses: actions/checkout@master
-        - uses: docker/lint/hadolint@master
-          null
 
+This simple job example has the bare minimum required to run.
+
+  dockerfile-linter:
+    name: Dockerfile Linter
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+      - uses: dogmatic69/actions@82870b0d
 
 This example has all possible inputs, with dummy data.
 
-    dockerfile-linter:
-      name: Dockerfile Linter
+  dockerfile-linter:
+    name: Dockerfile Linter
       runs-on: ubuntu-latest
       steps:
         - uses: actions/checkout@master
-        - uses: docker/lint/hadolint@master
-          with:
-            path: foobar
+        - uses: dogmatic69/actions@82870b0d
+        with:
+          path: foobar

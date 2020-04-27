@@ -1,46 +1,57 @@
+<!-- NOTICE: Auto generated file! -->
 # GitLeaks [docker action]
 
-Audit git repositories for secrets. Gitleaks provides a way for you to find unencrypted secrets and other unwanted data types in git repositories.
+Audit git repositories for secrets. Gitleaks provides a way for you to find
+unencrypted secrets and other unwanted data types in git repositories.
 
 #### Features
 - Audits for uncommitted changes
-- Output in JSON formats for consumption in other reporting tools and frameworks
+- Output in JSON formats for consumption in other reporting tools and
+  frameworks
 
 Adapted from [zricethezav/gitleaks](https://github.com/zricethezav/gitleaks)
 
+
+> The latest version available for this action is `82870b0d`. It was last
+updated on **Mon Apr 27 2020**.
 
 ## Inputs
 
 #### path
 
-The path to the repository that will be checked. Defaults to the location of `actions/checkout` default path.
+The path to the repository that will be checked. Defaults to the
+location of `actions/checkout` default path.
 
 
-- required: False
+- required: false
 - default: /github/workspace
 
 
+## Examples
 
-## Example
+As a step in pre-existing job.
 
-This example has only required inputs, with dummy data
+  - uses: actions/checkout@master
+  - ... other steps
+  - uses: dogmatic69/actions@82870b0d
 
-    gitleaks:
-      name: GitLeaks
-      runs-on: ubuntu-latest
-      steps:
-        - uses: actions/checkout@master
-        - uses: git/audit/gitleaks@master
-          null
 
+This simple job example has the bare minimum required to run.
+
+  gitleaks:
+    name: GitLeaks
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+      - uses: dogmatic69/actions@82870b0d
 
 This example has all possible inputs, with dummy data.
 
-    gitleaks:
-      name: GitLeaks
+  gitleaks:
+    name: GitLeaks
       runs-on: ubuntu-latest
       steps:
         - uses: actions/checkout@master
-        - uses: git/audit/gitleaks@master
-          with:
-            path: foobar
+        - uses: dogmatic69/actions@82870b0d
+        with:
+          path: foobar

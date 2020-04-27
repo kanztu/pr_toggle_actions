@@ -1,18 +1,24 @@
+<!-- NOTICE: Auto generated file! -->
 # Checkmake [docker action]
 
 Lint Makefiles using Checkmake.
 
-> checkmake is an experimental tool for linting and checking Makefiles. It may not do what you want it to.
+> checkmake is an experimental tool for linting and checking Makefiles. It
+may not do what you want it to.
 
+
+> The latest version available for this action is `82870b0d`. It was last
+updated on **Mon Apr 27 2020**.
 
 ## Inputs
 
 #### path
 
-The path to the repository that will be checked. Defaults to the location of `actions/checkout` default path.
+The path to the repository that will be checked. Defaults to the location
+of `actions/checkout` default path.
 
 
-- required: False
+- required: false
 - default: /github/workspace
 
 #### max_body_length
@@ -20,33 +26,36 @@ The path to the repository that will be checked. Defaults to the location of `ac
 The maximum number of lines in a make target.
 
 
-- required: False
+- required: false
 - default: 10
 
 
+## Examples
 
-## Example
+As a step in pre-existing job.
 
-This example has only required inputs, with dummy data
-
-    checkmake:
-      name: Checkmake
-      runs-on: ubuntu-latest
-      steps:
-        - uses: actions/checkout@master
-        - uses: file/lint/checkmake@master
-          with:
+  - uses: actions/checkout@master
+  - ... other steps
+  - uses: dogmatic69/actions@82870b0d
 
 
+This simple job example has the bare minimum required to run.
+
+  checkmake:
+    name: Checkmake
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+      - uses: dogmatic69/actions@82870b0d
 
 This example has all possible inputs, with dummy data.
 
-    checkmake:
-      name: Checkmake
+  checkmake:
+    name: Checkmake
       runs-on: ubuntu-latest
       steps:
         - uses: actions/checkout@master
-        - uses: file/lint/checkmake@master
-          with:
-            path: foobar
-            max_body_length: foobar
+        - uses: dogmatic69/actions@82870b0d
+        with:
+          path: foobar
+          max_body_length: foobar

@@ -1,6 +1,10 @@
+<!-- NOTICE: Auto generated file! -->
 # Service Action Runner [docker action]
 
 Run CI jobs for a particular service in a mono repo
+
+> The latest version available for this action is `82870b0d`. It was last
+updated on **Mon Apr 27 2020**.
 
 ## Inputs
 
@@ -8,40 +12,49 @@ Run CI jobs for a particular service in a mono repo
 
 The name of service (folder name relative to root)
 
-- required: True
-- default: None
+- required: true
+- default: null
 
 #### targets
 
 targets to call in the makefile
 
-- required: True
+- required: true
 - default: lint test
 
 
+## Examples
 
-## Example
+As a step in pre-existing job.
 
-This example has only required inputs, with dummy data
+  - uses: actions/checkout@master
+  - ... other steps
+  - uses: dogmatic69/actions@82870b0d
+    with:
+      service: foobar
+      targets: foobar
 
-    service-action-runner:
-      name: Service Action Runner
-      runs-on: ubuntu-latest
-      steps:
-        - uses: actions/checkout@master
-        - uses: docker/service@master
-          with:
-            service: foobar
-            targets: foobar
+
+This simple job example has the bare minimum required to run.
+
+  service-action-runner:
+    name: Service Action Runner
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+      - uses: dogmatic69/actions@82870b0d
+        with:
+          service: foobar
+          targets: foobar
 
 This example has all possible inputs, with dummy data.
 
-    service-action-runner:
-      name: Service Action Runner
+  service-action-runner:
+    name: Service Action Runner
       runs-on: ubuntu-latest
       steps:
         - uses: actions/checkout@master
-        - uses: docker/service@master
-          with:
-            service: foobar
-            targets: foobar
+        - uses: dogmatic69/actions@82870b0d
+        with:
+          service: foobar
+          targets: foobar
