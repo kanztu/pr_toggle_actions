@@ -14,15 +14,14 @@ jobs:
         uses: actions/checkout@master
         with:
           fetch-depth: 1
+      - name: Git Fetch
+        run: |
+          git fetch
       - name: Configurator
-        run: >
+        run: |
           make -C ${GITHUB_WORKSPACE}/src/configurator run-all
-
           git status
-
-          git diff-index --quiet HEAD -- || echo "Changes found in workflow,
-          please update"
-
+          git diff-index --quiet HEAD -- || (echo "Changes found"; git diff)
           git diff-index --quiet HEAD --
     runs-on: ubuntu-latest
   auto-pull-request-feature:
