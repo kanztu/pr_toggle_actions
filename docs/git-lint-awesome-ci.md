@@ -6,8 +6,8 @@ Lint the git repo for common errors
 Adapted from [cytopia/awesome-ci](https://github.com/cytopia/awesome-ci).
 
 
-> The latest version available for this action is `82870b0d`. It was last
-updated on **Mon Apr 27 2020**.
+> The latest version available for this action is `2ef0c5c0`. It was last
+updated on **Sat May 16 2020**.
 
 ## Inputs
 
@@ -49,7 +49,7 @@ As a step in pre-existing job.
 
   - uses: actions/checkout@master
   - ... other steps
-  - uses: dogmatic69/actions@82870b0d
+  - uses: dogmatic69/actions@2ef0c5c0
     with:
       command: foobar
 
@@ -61,7 +61,7 @@ This simple job example has the bare minimum required to run.
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@master
-      - uses: dogmatic69/actions@82870b0d
+      - uses: dogmatic69/actions@2ef0c5c0
         with:
           command: foobar
 
@@ -72,7 +72,7 @@ This example has all possible inputs, with dummy data.
       runs-on: ubuntu-latest
       steps:
         - uses: actions/checkout@master
-        - uses: dogmatic69/actions@82870b0d
+        - uses: dogmatic69/actions@2ef0c5c0
         with:
           command: foobar
           path: foobar
