@@ -44,6 +44,8 @@ module.exports = (() => {
     },
   });
 
+  self.fetch = () => self.run('Git Fetch', 'git fetch');
+
   self.fileChecks = (config) => Object.keys(config).map((name) => {
     const conf = {
       name,

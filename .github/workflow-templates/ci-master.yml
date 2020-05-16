@@ -2,47 +2,16 @@
   push:
     branches: ['master']
 
-docker-lint: true
+include:
+  - _ci.yml
+
 publish:
   environment: stage
   target: github
   matrix:
     service:
       - src/configurator
-project:
-  matrix:
-    image:
-      - src/configurator
-      - src/documentation
-file:
-  checks:
-    cr: []
-    crlf: []
-    trailing-newline: []
-    trailing-single-newline: []
-    utf8: []
-    utf8-bom: []
-    trailing-space: []
-  steps:
-    Checkmake: dogmatic69/actions/file/lint/checkmake@master
-git:
-  checks:
-    - conflicts
-    - ignored
-  steps:
-    'Git Leaks': dogmatic69/actions/git/audit/gitleaks@master
-trivy:
-  matrix:
-    image:
-      - docker/audit/trivy
-      - docker/lint/hadolint
-      - docker/service
-      - file/lint/awesome-ci
-      - file/lint/checkmake
-      - git/audit/gitleaks
-      - git/lint/awesome-ci
-      - src/documentation
-      - src/configurator
+
 raw:
   update-docs:
     name: Update Documentation

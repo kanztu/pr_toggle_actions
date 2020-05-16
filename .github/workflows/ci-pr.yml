@@ -35,15 +35,14 @@ jobs:
         uses: actions/checkout@master
         with:
           fetch-depth: 1
+      - name: Git Fetch
+        run: |
+          git fetch
       - name: Configurator
-        run: >
+        run: |
           make -C ${GITHUB_WORKSPACE}/src/configurator run-all
-
           git status
-
-          git diff-index --quiet HEAD -- || echo "Changes found in workflow,
-          please update"
-
+          git diff-index --quiet HEAD -- || (echo "Changes found"; git diff)
           git diff-index --quiet HEAD --
     runs-on: ubuntu-latest
   file-lint:
@@ -65,10 +64,12 @@ jobs:
         uses: dogmatic69/actions/file/lint/awesome-ci@master
         with:
           command: file-trailing-newline
+          ignore: '.git/,*.png,*.jpg,*.jpeg,*.ico,*.svg,docs/*.md'
       - name: trailing-single-newline
         uses: dogmatic69/actions/file/lint/awesome-ci@master
         with:
           command: file-trailing-single-newline
+          ignore: '.git/,*.png,*.jpg,*.jpeg,*.ico,*.svg,docs/*.md'
       - name: utf8
         uses: dogmatic69/actions/file/lint/awesome-ci@master
         with:
@@ -81,6 +82,7 @@ jobs:
         uses: dogmatic69/actions/file/lint/awesome-ci@master
         with:
           command: file-trailing-space
+          ignore: '.git/,*.png,*.jpg,*.jpeg,*.ico,*.svg,docs/*.md'
       - name: Checkmake
         uses: dogmatic69/actions/file/lint/checkmake@master
       - uses: ibiqlik/action-yamllint@master
@@ -103,10 +105,10 @@ jobs:
         uses: dogmatic69/actions/git/lint/awesome-ci@master
         with:
           command: git-ignored
-      - name: Git Leaks
-        uses: dogmatic69/actions/git/audit/gitleaks@master
       - name: Commit Lint
         uses: dogmatic69/actions/git/lint/commit-lint@master
+      - name: Git Leaks
+        uses: dogmatic69/actions/git/audit/gitleaks@master
     runs-on: ubuntu-latest
   audit-trivy:
     name: Audit Trivy
@@ -180,6 +182,9 @@ jobs:
         with:
           fetch-depth: 1
       - name: fetch
+        run: |
+          git fetch
+      - name: Git Fetch
         run: |
           git fetch
       - name: Publish

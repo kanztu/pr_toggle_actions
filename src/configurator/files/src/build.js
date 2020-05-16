@@ -34,10 +34,11 @@ module.exports = (configuration) => ({
         name: 'Workflow Check',
         steps: [
           libs.checkout(),
+          libs.fetch(),
           libs.run('Configurator', [
             'make -C ${GITHUB_WORKSPACE}/src/configurator run-all',
             'git status',
-            'git diff-index --quiet HEAD -- || echo "Changes found in workflow, please update"',
+            'git diff-index --quiet HEAD -- || (echo "Changes found"; git diff)',
             'git diff-index --quiet HEAD --',
           ]),
         ],
@@ -165,6 +166,7 @@ module.exports = (configuration) => ({
       const steps = [
         libs.checkout(),
         libs.run('fetch', 'git fetch'),
+        libs.fetch(),
       ];
 
       if (target === 'gcp') {
