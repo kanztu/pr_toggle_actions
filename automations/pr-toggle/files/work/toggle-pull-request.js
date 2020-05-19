@@ -32,13 +32,7 @@ const prIdFromHash = async (client, config) => {
   );
 
   const pr = data.data[0];
-  try {
-
-    core.info(`PR: ${JSON.stringify(pr)}`);
-    core.info(`PR - number: ${JSON.stringify(pr.number)}`);
-  } catch(e) {
-    core.info(`error ${e.stack}`);
-  }
+  core.info(`PR: ${JSON.stringify(pr)}`);
   if (pr && parseInt(pr.number) > 0) {
     core.info(`PR # from existing PR [${pr.number}]`);
     return pr.number;
