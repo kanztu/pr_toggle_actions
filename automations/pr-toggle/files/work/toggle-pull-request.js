@@ -12,14 +12,14 @@ const prId = (event) => {
   if (result) {
     const [, pullRequestId] = result;
     if (parseInt(pullRequestId) > 1) {
-      core.inf(`PR # from existing PR [${pullRequestId}]`);
+      core.info(`PR # from existing PR [${pullRequestId}]`);
       return pullRequestId;
     }
   }
 
   core.info(`file: ${process.env.GITHUB_EVENT_PATH}`);
   if (event.pull_request && parseInt(event.pull_request.number) > 0) {
-    core.inf(`PR # from GITHUB_EVENT_PATH [${event.pull_request.number}]`);
+    core.info(`PR # from GITHUB_EVENT_PATH [${event.pull_request.number}]`);
     return event.pull_request.number;
   }
 
@@ -63,7 +63,7 @@ module.exports = async () => {
       return core.info('No need for this Hack, PR exists');
     }
 
-    return core.setFailed('No PR number provided')
+    return core.info('No PR number provided')
   }
 
   core.info(`Updating the state of a pull request to [#${pr}: closed]`);
