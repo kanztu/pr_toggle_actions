@@ -3,8 +3,8 @@
 
 A collection of GitHub actions to push quality code agenda in an automated way.
 
-> The latest version available for this action is `28559ff0`. It was last
-updated on **Tue May 19 2020**.
+> The latest version available for this action is `de8f8fc4`. It was last
+updated on **Tue May 26 2020**.
 
 ## Available Actions
 
