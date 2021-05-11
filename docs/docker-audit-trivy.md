@@ -11,8 +11,8 @@ software or in an Operating System.
 and application dependencies (Bundler, Composer, npm, yarn etc.).
 
 
-> The latest version available for this action is `de8f8fc4`. It was last
-updated on **Tue May 26 2020**.
+> The latest version available for this action is `d781256d`. It was last
+updated on **Tue May 11 2021**.
 
 ## Inputs
 
@@ -51,7 +51,7 @@ As a step in pre-existing job.
 
   - uses: actions/checkout@master
   - ... other steps
-  - uses: dogmatic69/actions@de8f8fc4
+  - uses: dogmatic69/actions@d781256d
     with:
       image: foobar
 
@@ -63,7 +63,7 @@ This simple job example has the bare minimum required to run.
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@master
-      - uses: dogmatic69/actions@de8f8fc4
+      - uses: dogmatic69/actions@d781256d
         with:
           image: foobar
 
@@ -74,7 +74,7 @@ This example has all possible inputs, with dummy data.
       runs-on: ubuntu-latest
       steps:
         - uses: actions/checkout@master
-        - uses: dogmatic69/actions@de8f8fc4
+        - uses: dogmatic69/actions@d781256d
         with:
           image: foobar
           token: foobar
