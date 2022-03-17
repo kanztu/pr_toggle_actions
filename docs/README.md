@@ -3,8 +3,8 @@
 
 Below is a list of all the available GitHub actions.
 
-> The latest version available for this action is `d781256d`. It was last
-updated on **Tue May 11 2021**.
+> The latest version available for this action is `8e2fc41e`. It was last
+updated on **Thu Mar 17 2022**.
 
 [![automation pr](https://github.com/dogmatic69/actions/workflows/automation%20pr/badge.svg)](https://github.com/dogmatic69/actions)
 [![automation triage](https://github.com/dogmatic69/actions/workflows/automation%20triage/badge.svg)](https://github.com/dogmatic69/actions)

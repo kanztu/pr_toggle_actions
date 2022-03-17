@@ -9,8 +9,8 @@ this job multiple times with a different command.
 Adapted from [cytopia/awesome-ci](https://github.com/cytopia/awesome-ci).
 
 
-> The latest version available for this action is `d781256d`. It was last
-updated on **Tue May 11 2021**.
+> The latest version available for this action is `8e2fc41e`. It was last
+updated on **Thu Mar 17 2022**.
 
 ## Inputs
 
@@ -62,7 +62,7 @@ As a step in pre-existing job.
 
   - uses: actions/checkout@master
   - ... other steps
-  - uses: dogmatic69/actions@d781256d
+  - uses: dogmatic69/actions@8e2fc41e
     with:
       command: foobar
 
@@ -74,7 +74,7 @@ This simple job example has the bare minimum required to run.
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@master
-      - uses: dogmatic69/actions@d781256d
+      - uses: dogmatic69/actions@8e2fc41e
         with:
           command: foobar
 
@@ -85,7 +85,7 @@ This example has all possible inputs, with dummy data.
       runs-on: ubuntu-latest
       steps:
         - uses: actions/checkout@master
-        - uses: dogmatic69/actions@d781256d
+        - uses: dogmatic69/actions@8e2fc41e
         with:
           command: foobar
           path: foobar
