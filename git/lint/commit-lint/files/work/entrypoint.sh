@@ -23,7 +23,7 @@ echo "Patern to match: [${INPUT_PATTERN}]"
 git fetch
 
 start=$(git -C "${REPO}" rev-parse --short "origin/${GITHUB_BASE_REF:-master}")
-end=$(git -C "${REPO}" rev-parse --short "origin/${GITHUB_HEAD_REF:-HEAD}")
+end=$(git -C "${REPO}" rev-parse --short "origin/${GITHUB_HEAD_REF:-HEAD}" || git -C "${REPO}" rev-parse --short "pull/${GITHUB_REF_NAME}")
 
 
 MATCHED_ONCE=false
